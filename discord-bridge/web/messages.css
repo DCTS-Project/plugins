@@ -1,0 +1,15 @@
+.message-container .meta .badge-discord_message{
+    background-color: #7289da;
+    color: white;
+
+    border: 1.5px solid rgb(255 255 255 / 0.1);
+    border-radius: 4px;
+
+    font-weight: bold;
+    font-size: 10px;
+    padding: 0 4px;
+}
+
+#channeltree .channelTrigger img.channellist-icon.type-discord_message{
+    source: url('/img/default_pfp.png') !important;
+}

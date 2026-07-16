@@ -1,0 +1,19 @@
+{
+  "title": "Discord Bridge",
+  "author": "HackTheDev",
+  "version": 1,
+  "dependencies": [
+    "discord.js@latest"
+  ],
+  "settings": {
+    "discord": {
+      "bot_token": "",
+      "guilds": [
+        "1428967003191906304"
+      ],
+      "sync_channels": true,
+      "sync_messages": true,
+      "sync_roles": true
+    }
+  }
+}
