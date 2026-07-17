@@ -7,7 +7,7 @@
   ],
   "settings": {
     "discord": {
-      "bot_token": "",
+      "bot_token": null,
       "guilds": [
         "1428967003191906304"
       ],
