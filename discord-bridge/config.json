@@ -1,6 +1,7 @@
 {
   "title": "Discord Bridge",
   "author": "HackTheDev",
+  "image": "",
   "version": 1,
   "dependencies": [
     "discord.js@latest"
@@ -9,7 +10,6 @@
     "discord": {
       "bot_token": null,
       "guilds": [
-        "1428967003191906304"
       ],
       "sync_channels": true,
       "sync_messages": true,

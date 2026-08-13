@@ -1,0 +1,6 @@
+{
+    "name": "dcts-discord-bridge",
+    "description": "Discord bridge plugin for DCTS",
+    "version": "1.0.0",
+    "license": "NONE"
+}
