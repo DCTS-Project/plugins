@@ -1,5 +1,9 @@
 # Discord Bridge for DCTS
 
+> [!WARNING]
+>
+> THIS PLUGIN IS EXPERIMENTAL!!! EXPECT BUGS AND ALL
+
 This amazing plugin enables you to message between DCTS and discord!
 
 ---
