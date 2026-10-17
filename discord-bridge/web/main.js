@@ -1,4 +1,4 @@
-injectCss("/plugins/discord-bridge/messages.css")
+injectCss("/plugins/dcts-discord-bridge/messages.css")
 
 // on message SEND event
 EventDispatcher.on("messageSend", async(payload) => {

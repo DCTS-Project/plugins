@@ -3,7 +3,7 @@ import {saveChatMessage} from "../../../../modules/functions/io.mjs";
 import {client, UNCATEGORIZED_ID} from "../plugin_onLoad.mjs";
 import {deleteChatMessagesFromDb} from "../../../../modules/functions/mysql/helper.mjs";
 import Logger from "../../../../modules/functions/logger.mjs";
-import {serverconfig} from "../../../../index.mjs";
+import {saveConfig, serverconfig} from "../../../../modules/functions/init/config.mjs";
 import {createMember} from "../../../../modules/functions/member.mjs";
 import {resolveCategoryByChannelId, resolveGroupByChannelId} from "../../../../modules/functions/chat/main.mjs";
 import {generateId, getCastingMemberObject} from "../../../../modules/functions/main.mjs";

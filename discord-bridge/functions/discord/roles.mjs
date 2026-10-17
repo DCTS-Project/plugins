@@ -1,5 +1,5 @@
 import {Events, PermissionFlagsBits} from "discord.js";
-import {saveConfig, serverconfig} from "../../../../index.mjs";
+import {saveConfig, serverconfig} from "../../../../modules/functions/init/config.mjs";
 import {client, pluginSettings} from "../plugin_onLoad.mjs";
 
 export function initRoleSync() {

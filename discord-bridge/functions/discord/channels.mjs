@@ -1,6 +1,6 @@
 import {ChannelType, Events, ActivityType} from "discord.js";
 import {client, pluginSettings, UNCATEGORIZED_ID} from "../plugin_onLoad.mjs";
-import {saveConfig, serverconfig} from "../../../../index.mjs";
+import {saveConfig, serverconfig} from "../../../../modules/functions/init/config.mjs";
 import Logger from "@hackthedev/terminal-logger";
 import {saveMemberToDB} from "../../../../modules/functions/mysql/helper.mjs";
 import {getDCTSChannelPermissions, syncDiscordRoles} from "./roles.mjs";

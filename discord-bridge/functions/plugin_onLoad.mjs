@@ -1,5 +1,4 @@
 // Example Imports
-import Logger from "../../../modules/functions/logger.mjs";
 import path from "path";
 import {initDiscordMessageSync} from "./discord/server-chat.mjs";
 import JSONTools from "@hackthedev/json-tools";
@@ -7,7 +6,7 @@ import fs from "fs";
 import {initDiscordChannelSync} from "./discord/channels.mjs";
 
 import {Client, GatewayIntentBits, Events, Partials} from "discord.js";
-import logger from "../../../modules/functions/logger.mjs";
+import Logger from "@hackthedev/terminal-logger";
 import {initRoleSync} from "./discord/roles.mjs";
 
 let pluginConfig = JSONTools.tryParse(
@@ -23,7 +22,7 @@ registerDiscordBridgeBot();
 
 export async function registerDiscordBridgeBot() {
     if(!pluginSettings.discord.bot_token){
-        return logger.warn("[discord-bridge] Bot Token not set!")
+        return Logger.warn("[discord-bridge] Bot Token not set!")
     }
 
     client = new Client({
@@ -55,5 +54,5 @@ export async function registerDiscordBridgeBot() {
 
     client.login(pluginSettings.discord.bot_token);
 
-    logger.success("[discord-bridge] Bot is online!")
+    Logger.success("[discord-bridge] Bot is online!")
 }
