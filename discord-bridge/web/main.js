@@ -1,5 +1,43 @@
 injectCss("/plugins/dcts-discord-bridge/messages.css")
 
+ContextMenu.registerContextMenu(
+    "discord_memberprofile",
+    [
+        ".memberlist-container",
+        ".memberlist-container .name",
+        ".memberlist-container .status",
+        ".memberlist-img",
+        ".mention.member",
+        // vc container
+        ".vc-container .participant",
+        ".vc-container .participant img",
+        ".user-container .user-icon",
+        ".message-container .icon",
+        ".message-container .username",
+        // vc user from channels
+        "#channeltree .category .participants .participant",
+        "#channeltree .category .participants .participant .avatar",
+    ],
+    [
+        {
+            icon: "&#10022;",
+            text: "Link Discord Account",
+            callback: async (data) => {
+                let memberId = data.element.getAttribute("data-member-id");
+
+                // account link code here
+                socket.emit("linkDiscordAccount", {id: UserManager.getID(), token: UserManager.getToken(), target: memberId}, async function (response) {
+                    console.log(response)
+                });
+            },
+            condition: async (data) => {
+                let memberType = data.element?.closest(".memberlist-container")?.getAttribute("data-member-type");
+                return memberType === "discord_user"
+            },
+            type: "success"
+        }
+    ])
+
 // on message SEND event
 EventDispatcher.on("messageSend", async(payload) => {
     let {message, channelType} = payload;
@@ -8,6 +46,15 @@ EventDispatcher.on("messageSend", async(payload) => {
         let sendingResult = await sendDiscordMessage(message)
     }
 })
+
+EventDispatcher.on("getMemberList", async (data) => {
+    data.members = Object.fromEntries(
+        Object.entries(data.members).filter(([id, member]) => {
+
+            return member?.type === "discord_user"
+        })
+    );
+});
 
 EventDispatcher.on("getChatLog", async(data) => {
     let {container, index, appendTop, channelId, channelType} = data;

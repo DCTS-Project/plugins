@@ -121,10 +121,10 @@ async function syncGuild(guild) {
             syncedCategories[UNCATEGORIZED_ID].channel[channel.id] =
                 createDCTSChannelObject(channel, channelSortId);
 
-            Logger.info(`Synced Discord channel ${channel.name} (${channel.id})`);
+            Logger.debug(`Sync'ed Discord channel ${channel.name} (${channel.id})`);
         }
 
-        Logger.info(`Synced Discord category Uncategorized (${UNCATEGORIZED_ID})`);
+        Logger.debug(`Sync'ed Discord category Uncategorized (${UNCATEGORIZED_ID})`);
 
         categorySortId++;
     }
@@ -143,7 +143,7 @@ async function syncGuild(guild) {
             channel: {}
         };
 
-        Logger.info(`Synced Discord category ${category.name} (${category.id})`);
+        Logger.debug(`Synced Discord category ${category.name} (${category.id})`);
 
         for (let channelSortId = 0; channelSortId < categoryChannels.length; channelSortId++) {
             const channel = categoryChannels[channelSortId];
@@ -151,7 +151,7 @@ async function syncGuild(guild) {
             syncedCategories[category.id].channel[channel.id] =
                 createDCTSChannelObject(channel, channelSortId);
 
-            Logger.info(`Synced Discord channel ${channel.name} (${channel.id})`);
+            Logger.debug(`Synced Discord channel ${channel.name} (${channel.id})`);
         }
 
         categorySortId++;
@@ -181,6 +181,33 @@ function createDCTSChannelObject(channel, sortId) {
             synced: 1
         }
     };
+}
+
+export async function getDefaultChannel(guildId) {
+    if (!client?.isReady()) return null;
+
+    try {
+        let guild = await client.guilds.fetch(guildId);
+        if (!guild) return null;
+
+        let channels = await guild.channels.fetch();
+        let me = await guild.members.fetchMe();
+
+        let channel = guild.systemChannel;
+
+        if (channel?.isTextBased() && channel.permissionsFor(me)?.has("SendMessages")) {
+            return channel;
+        }
+
+        return channels
+            .filter(c => c?.isTextBased() && c?.send && c.permissionsFor(me)?.has("SendMessages"))
+            .sort((a, b) => a.position - b.position)
+            .first() ?? null;
+    }
+    catch (Err) {
+        Logger.error(`[discord-bridge] Could not get default channel: ${Err}`);
+        return null;
+    }
 }
 
 async function checkDCTSGroupInit(guild) {

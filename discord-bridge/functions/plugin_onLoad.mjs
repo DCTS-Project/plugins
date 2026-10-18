@@ -40,7 +40,7 @@ export async function registerDiscordBridgeBot() {
     });
 
     client.once(Events.ClientReady, readyClient => {
-        console.log(`Logged in as ${readyClient.user.tag}`);
+        Logger.debug(`[discord-bridge] Logged in as ${readyClient.user.tag}`);
     });
 
     client.on(Events.MessageCreate, async message => {
@@ -48,11 +48,11 @@ export async function registerDiscordBridgeBot() {
         if (!message.inGuild()) return;
     });
 
+    client.login(pluginSettings.discord.bot_token);
+    Logger.success("[discord-bridge] Bot is online!")
+
+    Logger.info("[discord-bridge] Synchronizing data with discord...")
     initRoleSync();
     initDiscordChannelSync();
     initDiscordMessageSync();
-
-    client.login(pluginSettings.discord.bot_token);
-
-    Logger.success("[discord-bridge] Bot is online!")
 }

@@ -8,6 +8,7 @@ import {createMember} from "../../../../modules/functions/member.mjs";
 import {resolveCategoryByChannelId, resolveGroupByChannelId} from "../../../../modules/functions/chat/main.mjs";
 import {generateId, getCastingMemberObject} from "../../../../modules/functions/main.mjs";
 import {emitDeletedMessage, emitEditedMessage, emitNewMessage} from "../../sockets/dcts/sendMessage.mjs";
+import DCTS from "../../../../sdk/v1/backend/dcts_sdk.mjs";
 
 export function initDiscordMessageSync() {
     if (!client) {
@@ -154,7 +155,7 @@ export async function fetchDiscordChannelMessages(channelId, messageId = 0, limi
     const channel = await client.channels.fetch(channelId);
 
     if (!channel?.isTextBased?.()) {
-        throw new Error("Discord channel is not text based");
+        return Logger.debug(`Discord channel ${channel?.name} is not text based`);
     }
 
     const options = {
@@ -283,27 +284,30 @@ export async function ensureDiscordMember(discordMessage) {
 
     if (serverconfig.servermembers[memberId]) return;
 
-    await createMember({
-        id: memberId,
-        token: `discord_${memberId}`,
-        password: `discord_${memberId}`,
-        loginName: `discord_${memberId}`,
-        name:
-            discordMessage.member?.displayName ??
+    let discordToken = `discord_${memberId}_${generateId(48)}`;
+    discordToken = discordToken.substring(0, 48);
+
+    let memberBuilder = new DCTS.Members.Builder()
+        .setId(memberId)
+        .setToken(discordToken)
+        .setLoginName(crypto.randomUUID())
+        .setName(discordMessage.member?.displayName ??
             discordMessage.author?.globalName ??
             discordMessage.author?.username ??
-            "Unknown",
-        icon: discordMessage.author?.displayAvatarURL?.({
+            "Unknown")
+        .setIcon(discordMessage.author?.displayAvatarURL?.({
             size: 256
-        }) ?? null,
-        banner: discordMessage.author?.bannerURL?.({
+        }) ?? null)
+        .setBanner(discordMessage.author?.bannerURL?.({
             size: 1024
-        }) ?? null,
-        joined: discordMessage.member?.joinedTimestamp ?? Date.now(),
-        lastOnline: Date.now(),
-        onboarding: 1,
-        type: "discord_user"
-    });
+        }) ?? null)
+        .setJoined(discordMessage.member?.joinedTimestamp ?? new Date().getTime())
+        .setLastOnline(new Date().getTime())
+        .setOnboarding(true)
+        .setType("discord_user")
+
+    await memberBuilder.setPassword(crypto.randomUUID())
+    await memberBuilder.save();
 }
 
 export async function sendDiscordMessage(message) {
