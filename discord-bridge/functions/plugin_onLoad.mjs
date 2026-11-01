@@ -8,6 +8,8 @@ import {initDiscordChannelSync} from "./discord/channels.mjs";
 import {Client, GatewayIntentBits, Events, Partials} from "discord.js";
 import Logger from "@hackthedev/terminal-logger";
 import {initRoleSync} from "./discord/roles.mjs";
+import {initializeSocketIO} from "../sockets/dcts/sendMessage.mjs";
+import {io} from "../../../modules/functions/init/sockets.mjs";
 
 let pluginConfig = JSONTools.tryParse(
     fs.readFileSync(path.join(__dirname, "../config.json"), "utf8"),
@@ -18,6 +20,7 @@ export let pluginSettings = pluginConfig?.settings;
 export let client = null;
 export const UNCATEGORIZED_ID = "uncategorized";
 
+initializeSocketIO(io)
 registerDiscordBridgeBot();
 
 export async function registerDiscordBridgeBot() {

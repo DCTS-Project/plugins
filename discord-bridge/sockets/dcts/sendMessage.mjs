@@ -11,38 +11,35 @@ import {getSavedChatMessage} from "../../../../modules/functions/io.mjs";
 import {sendDiscordEmbed} from "../../functions/discord/account.mjs";
 import DCTS from "../../../../sdk/v1/backend/dcts_sdk.mjs";
 import {serverconfig} from "../../../../modules/functions/init/config.mjs";
-import {getFixedUrl} from "../../../../modules/functions/chat/helper.mjs";
 import {getDefaultGroupIcon} from "../../../../modules/sockets/getServerInfo.mjs";
 
 
-export let emitNewMessage = () => {
-    throw new Error("Socket.IO is not initialized");
-};
+let ioInstance = null;
 
-export let emitEditedMessage = () => {
-    throw new Error("Socket.IO is not initialized");
-};
+export function initializeSocketIO(io) {
+    ioInstance = io;
+}
 
-export let emitDeletedMessage = () => {
-    throw new Error("Socket.IO is not initialized");
-};
+export async function emitNewMessage(message) {
+    if (!ioInstance) throw new Error("Socket.IO is not initialized");
+
+    ioInstance.emit("messageCreate", message);
+}
+
+export async function emitEditedMessage(message) {
+    if (!ioInstance) throw new Error("Socket.IO is not initialized");
+
+    ioInstance.in(message.channel).emit("messageEdited", message);
+}
+
+export async function emitDeletedMessage(message) {
+    if (!ioInstance) throw new Error("Socket.IO is not initialized");
+
+    ioInstance.emit("receiveDeleteMessage", message.messageId);
+}
 
 
 export default (io, socket) => {
-
-    emitNewMessage = async message => {
-        const room = String(message.channel);
-        io.emit("messageCreate", message);
-    };
-
-    emitEditedMessage = async message => {
-        io.in(message.channel).emit("messageEdited", message);
-    };
-
-    emitDeletedMessage = async message => {
-        const room = String(message.channel);
-        io.emit("receiveDeleteMessage", message.messageId);
-    };
 
     socket.on('getChatlog', async function (member, response) {
         if (await validateMemberId(member?.id, socket,  member?.token) === true) {
@@ -101,8 +98,8 @@ export default (io, socket) => {
                 ${memberObj.name} _(${memberObj.id})_ wants to link with your discord account.\n
                 If this is not you ignore this message.`,
                 color: 0xFFFFFF,
-                image: `${getFixedUrl(serverBanner)}`,
-                thumbnail: `${getFixedUrl(serverIcon)}`,
+                image: `${DCTS.Tools.Media.getExternalUrl(serverBanner)}`,
+                thumbnail: `${DCTS.Tools.Media.getExternalUrl(serverIcon)}`,
                 buttons: [
                     {
                         text: "Link",
